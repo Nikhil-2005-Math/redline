@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #050505;
+  --color-bg-secondary: #0B0B0F;
+  --color-card: #101014;
+  --color-card-hover: #16161C;
+  --color-neon-red: #FF3038;
+  --color-crimson: #C81020;
+  --color-red-bright: #FF5555;
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #A0A0A8;
+  --color-border-glow: rgba(255, 48, 56, 0.35);
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Headings font */
+h1, h2, h3, h4, .font-heading {
+  font-family: 'Rajdhani', 'Space Grotesk', sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.font-mono-code {
+  font-family: 'Space Grotesk', monospace;
+}
+
+.font-display-badge {
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+}
+
+/* Custom Neon Red Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #08080C;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A1014;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 48, 56, 0.25);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF3038;
+  box-shadow: 0 0 10px #FF3038;
+}
+
+/* Cyber Neon Utilities */
+.neon-border {
+  border: 1px solid rgba(255, 48, 56, 0.35);
+  box-shadow: 0 0 15px rgba(255, 48, 56, 0.12);
+}
+
+.neon-border-hover:hover {
+  border-color: rgba(255, 48, 56, 0.75);
+  box-shadow: 0 0 25px rgba(255, 48, 56, 0.30);
+}
+
+.neon-text-glow {
+  text-shadow: 0 0 12px rgba(255, 48, 56, 0.65);
+}
+
+.neon-text-glow-bright {
+  text-shadow: 0 0 20px rgba(255, 85, 85, 0.85);
+}
+
+.glass-panel {
+  background: rgba(16, 16, 20, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 48, 56, 0.25);
+}
+
+/* Subtle glowing separator */
+.glowing-separator {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 48, 56, 0.6), transparent);
+}
+
+/* Cyber grid background pattern */
+.cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 48, 56, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 48, 56, 0.04) 1px, transparent 1px);
+}
+
+/* Radar Pulse Animation */
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-radar {
+  animation: radar-sweep 6s linear infinite;
+}
