@@ -1,0 +1,18 @@
+# Netlify Configuration for REDLINE Ecosystem
+
+[build]
+  # Path to the frontend directory containing package.json
+  base = "frontend"
+
+  # Build command to produce static assets
+  command = "npm run build"
+
+  # Directory containing the compiled production build
+  publish = "dist"
+
+# Single-Page Application (SPA) routing:
+# Ensures React Router can handle direct navigation and page refreshes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
