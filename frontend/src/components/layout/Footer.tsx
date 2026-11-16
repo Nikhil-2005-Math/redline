@@ -96,6 +96,11 @@ export const Footer: React.FC = () => {
                   Cyber Awareness Quizzes & Certs
                 </NavLink>
               </li>
+              <li>
+                <NavLink to="/admin" className="hover:text-white text-[#FF5555] transition">
+                  Admin Portal & Content Sync
+                </NavLink>
+              </li>
             </ul>
           </div>
 

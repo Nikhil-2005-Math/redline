@@ -16,6 +16,7 @@ import { IndiaSafetyPage } from './pages/IndiaSafetyPage';
 import { CyberQuizPage } from './pages/CyberQuizPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { AboutPage } from './pages/AboutPage';
+import { AdminPage } from './pages/AdminPage';
 
 export const App: React.FC = () => {
   return (
@@ -36,6 +37,7 @@ export const App: React.FC = () => {
             <Route path="quiz" element={<CyberQuizPage />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="about" element={<AboutPage />} />
+            <Route path="admin" element={<AdminPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

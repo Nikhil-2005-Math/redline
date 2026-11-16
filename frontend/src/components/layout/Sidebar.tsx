@@ -13,7 +13,8 @@ import {
   Info,
   User,
   Flag,
-  Radio
+  Radio,
+  Database
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
@@ -28,6 +29,7 @@ export const Sidebar: React.FC = () => {
     { label: 'Cyber Quiz', path: '/quiz', icon: Award },
     { label: 'User Dashboard', path: '/dashboard', icon: User },
     { label: 'About', path: '/about', icon: Info },
+    { label: 'Admin Portal', path: '/admin', icon: Database },
   ];
 
   return (

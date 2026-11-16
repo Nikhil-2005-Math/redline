@@ -13,7 +13,8 @@ import {
   Info,
   User,
   Flag,
-  ShieldAlert
+  ShieldAlert,
+  Database
 } from 'lucide-react';
 
 interface MobileNavProps {
@@ -36,6 +37,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
     { label: 'Cyber Quiz', path: '/quiz', icon: Award },
     { label: 'User Dashboard', path: '/dashboard', icon: User },
     { label: 'About Ecosystem', path: '/about', icon: Info },
+    { label: 'Admin Portal', path: '/admin', icon: Database },
   ];
 
   return (
