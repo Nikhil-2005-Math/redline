@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import {
   ShieldAlert,
   Plus,
@@ -17,7 +18,16 @@ import {
   Layers,
   X,
   Save,
-  Radio
+  Radio,
+  Lock,
+  Unlock,
+  KeyRound,
+  Eye,
+  EyeOff,
+  LogOut,
+  User as UserIcon,
+  ArrowLeft,
+  ShieldCheck
 } from 'lucide-react';
 import { NeonCard } from '../components/common/NeonCard';
 import { CyberButton } from '../components/common/CyberButton';
@@ -27,6 +37,17 @@ import { Threat, ThreatCategory, CyberAlert } from '../types';
 import { FullQuizQuestion } from '../data/initialData';
 
 export const AdminPage: React.FC = () => {
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return sessionStorage.getItem('redline_admin_auth') === 'true';
+  });
+  const [adminId, setAdminId] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+  // Tab & Notification State
   const [activeTab, setActiveTab] = useState<'threats' | 'alerts' | 'quizzes' | 'sync'>('threats');
   const [searchTerm, setSearchTerm] = useState('');
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -62,12 +83,42 @@ export const AdminPage: React.FC = () => {
   };
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (isAuthenticated) {
+      loadData();
+    }
+  }, [isAuthenticated]);
 
   const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 4000);
+  };
+
+  // --- Login & Logout Handlers ---
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAuthenticating(true);
+    setLoginError('');
+
+    setTimeout(() => {
+      // Validate credentials
+      if (adminId.trim() === 'admin' && adminPassword === 'anyone123') {
+        sessionStorage.setItem('redline_admin_auth', 'true');
+        setIsAuthenticated(true);
+        loadData();
+        showNotification('Admin clearance authorized. Welcome to REDLINE Command Operations.');
+      } else {
+        setLoginError('ACCESS DENIED: Invalid Admin ID or Passphrase.');
+      }
+      setIsAuthenticating(false);
+    }, 400);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('redline_admin_auth');
+    setIsAuthenticated(false);
+    setAdminId('');
+    setAdminPassword('');
+    showNotification('Admin terminal locked.');
   };
 
   // --- Threat Handlers ---
@@ -308,6 +359,110 @@ export const AdminPage: React.FC = () => {
     t.short_desc.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // ==========================================
+  // VIEW 1: GATEKEEPER LOGIN SCREEN
+  // ==========================================
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-[75vh] flex items-center justify-center py-12 px-4 animate-fade-in">
+        <div className="max-w-md w-full space-y-6">
+          <NeonCard glow={true} className="p-8 border-[#FF3038] shadow-[0_0_35px_rgba(255,48,56,0.35)] relative overflow-hidden">
+            {/* Top scanning pulse bar */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#FF3038] to-transparent animate-pulse" />
+
+            <div className="text-center space-y-3 mb-6">
+              <div className="w-16 h-16 rounded-2xl bg-[#101014] border-2 border-[#FF3038] mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(255,48,56,0.5)]">
+                <Lock className="w-8 h-8 text-[#FF3038] animate-pulse" />
+              </div>
+              <div className="inline-block px-3 py-1 rounded-full bg-[#FF3038]/20 border border-[#FF3038]/50 text-[#FF5555] font-mono text-[10px] tracking-widest uppercase font-bold">
+                Level-5 Clearance Required
+              </div>
+              <h1 className="font-display-badge text-2xl font-black text-white tracking-wider">
+                RED<span className="text-[#FF3038]">LINE</span> COMMAND GATEWAY
+              </h1>
+              <p className="text-[#A0A0A8] text-xs leading-relaxed">
+                Enter your administrative credentials to unlock threat management, cyber advisories, and system operations.
+              </p>
+            </div>
+
+            {loginError && (
+              <div className="mb-4 p-3 rounded-xl bg-red-950/50 border border-red-500/60 text-red-300 text-xs flex items-center gap-2 animate-shake">
+                <AlertTriangle className="w-4 h-4 text-[#FF3038] flex-shrink-0" />
+                <span>{loginError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-[#A0A0A8] text-[11px] font-mono uppercase mb-1.5 flex items-center gap-1.5">
+                  <UserIcon className="w-3.5 h-3.5 text-[#FF3038]" />
+                  <span>Admin ID</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  autoFocus
+                  placeholder="admin"
+                  value={adminId}
+                  onChange={e => setAdminId(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#101014] border border-[#FF3038]/40 text-white placeholder-[#606068] text-xs font-mono focus:outline-none focus:border-[#FF3038] focus:shadow-[0_0_15px_rgba(255,48,56,0.3)] transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#A0A0A8] text-[11px] font-mono uppercase mb-1.5 flex items-center gap-1.5">
+                  <KeyRound className="w-3.5 h-3.5 text-[#FF3038]" />
+                  <span>Master Passphrase</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    placeholder="••••••••••••"
+                    value={adminPassword}
+                    onChange={e => setAdminPassword(e.target.value)}
+                    className="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-[#101014] border border-[#FF3038]/40 text-white placeholder-[#606068] text-xs font-mono focus:outline-none focus:border-[#FF3038] focus:shadow-[0_0_15px_rgba(255,48,56,0.3)] transition"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A0A0A8] hover:text-white transition"
+                    title={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <CyberButton
+                type="submit"
+                variant="primary"
+                className="w-full mt-2"
+                isLoading={isAuthenticating}
+                icon={<Unlock className="w-4 h-4" />}
+              >
+                Authenticate Terminal
+              </CyberButton>
+            </form>
+
+            <div className="mt-6 pt-4 border-t border-white/10 text-center">
+              <NavLink
+                to="/"
+                className="inline-flex items-center gap-1.5 text-xs font-mono text-[#A0A0A8] hover:text-[#FF5555] transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Return to Public Dashboard</span>
+              </NavLink>
+            </div>
+          </NeonCard>
+        </div>
+      </div>
+    );
+  }
+
+  // ==========================================
+  // VIEW 2: AUTHENTICATED ADMIN PORTAL
+  // ==========================================
   return (
     <div className="py-8 px-4 md:px-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
       {/* Top Banner */}
@@ -329,15 +484,24 @@ export const AdminPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Live Storage Mode Badge */}
-        <div className="flex items-center gap-3">
-          <div className="px-4 py-2 rounded-xl bg-[#101014] border border-[#FF3038]/30 flex items-center gap-2.5 shadow-[0_0_15px_rgba(255,48,56,0.15)]">
-            <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+        {/* Admin Status & Logout Action */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="px-3.5 py-2 rounded-xl bg-[#101014] border border-emerald-500/40 flex items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
             <div>
-              <p className="text-[10px] font-mono text-[#A0A0A8] uppercase">Persistence Engine</p>
-              <p className="text-xs font-mono text-emerald-400 font-bold">CLIENT SYNC ACTIVE</p>
+              <p className="text-[10px] font-mono text-[#A0A0A8] uppercase">Clearance Verified</p>
+              <p className="text-xs font-mono text-emerald-400 font-bold">ROOT ADMIN (admin)</p>
             </div>
           </div>
+
+          <CyberButton
+            variant="danger"
+            size="sm"
+            onClick={handleLogout}
+            icon={<LogOut className="w-4 h-4" />}
+          >
+            Lock Terminal
+          </CyberButton>
         </div>
       </div>
 
